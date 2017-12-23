@@ -1,20 +1,22 @@
 var app = require('electron').remote;
 var dialog = app.dialog;
 var fs = require('fs');
-document.getElementById('openButton').onclick = () =>{
-  dialog.showOpenDialog((fileNames)=> {
-    if (fileNames == undefined)
+document.getElementById('openButton').onclick = () =>{ /// finds when open button is clicked
+  dialog.showOpenDialog((fileNames)=> { //// takes the location of the filenPath
+    if (fileNames == undefined) //  if not nothing
     {
       alert('nope');
     }
-    else if (isData(fileNames[0]))
+    else if (isData(fileNames[0])) /// takes the file and the first path length in the array
     {
-      var array = fs.readFileSync(fileNames[0]).toString().split("\n");
+      var array = fs.readFileSync(fileNames[0]).toString().split("\n"); //looks through an cuts file
+      // into array list of of lines of data
       for(i in array) {
         //  console.log(array[i]);
       }
 
-        var  cj = new dataInTake(array);
+        var  cj = new dataInTake(array); //  creates data  that is cut into ammounts of data
+
       //chopAndSort(array);
       //readFiled(fileNames[0]);
       //console.log('Line: ' + fileNames[0]);
@@ -27,12 +29,12 @@ document.getElementById('openButton').onclick = () =>{
 
 };
 
-function getExtension(filename) {
+function getExtension(filename) { // determins if the file is read able
    var parts = filename.split('.');
    return parts[parts.length - 1];
 }
 
-function isData(filename) {
+function isData(filename) { // sees what type of file it is
    var ext = getExtension(filename);
    switch (ext.toLowerCase()) {
    case 'txt':
@@ -44,53 +46,62 @@ function isData(filename) {
 }
 
 
-class dataInTake
+class dataInTake // data struct
 {
 
-  constructor(array)
+  constructor(array) // constuctor calls shit
   {
-    dataInTake.chopAndSor(array);
+    dataInTake.chopAndSor(array); // chops data
 
   }
+  sendArrayOut(arra)
+  {
 
-    static chopAndSor(arra)
+    return arra
+  }
+
+
+    static chopAndSor(arra)// takes data trying to find start of data
   {
     var lineStart = 0;
-        for(i in arra) {
-        if (dataInTake.findTime(arra[i]))
+        for(i in arra) { // runns through the lines
+        if (dataInTake.findTime(arra[i])) // finding time for the  starting point
         {
-           lineStart = i;
+           lineStart = i; // takes down that line
            break;
          }
         }
-        this.lastIndex = lineStart;
-        this.nameData = dataInTake.getNameData (lineStart, arra);
-        dataInTake.getData (lineStart, arra);
+        this.lastIndex = lineStart;// line where  "time" is found
+        this.nameData = dataInTake.getNameData (lineStart, arra); // get the name array to access the name array
+        // use var dataInTakevar = dataInTake(array );
+        //dataInTakevar.nameData  this is and array access
+      var  data =  dataInTake.getData (lineStart, arra); // gets finnish cut up arrays
+      return data; // sends final array of cut data
   }
-  static getData (lineStart, arra)
+  static getData (lineStart, arra)  // getss data
   {
-console.log(arra[5]  + " g g   " + lineStart+1);
     var stringsa = [];
       var numbOfData = [];
       for(var j = 5 ; j < arra.length-1; j++ ) {
 
-        var places = dataInTake.findCommas(arra[j]);
+        var places = dataInTake.findCommas(arra[j]); // runs through to get cammas and add the  place to an array
         var f = 0;
         var goTo;
         var n = '';
         for (i in places){
-          var numbOfDat = [];
-          numbOfData.push(numbOfDat)
-        goTo =  places[i];
+          var numbOfDat = []; //   empty place holder array
+          numbOfData.push(numbOfDat) // adds to main aray
+        goTo =  places[i]; // camma to cammo
         n = '';
                 for (f ; f < goTo ; f++)
                 {
                   if (arra[j].substring(f , f+1) !== ',')
                     { // console.log(  lineStart+ " g g   " +  arra[j].substring(f , f+1));
-                      n += arra[j].substring(f, f+1);}
+                      n += arra[j].substring(f, f+1);
+                    } // adds to string
                   }
-          numbOfData[i].push(n);
-          f = goTo;
+          numbOfData[i].push(n); // add to smaller array in b
+          f = goTo; //starting point
                 }
 
       }
@@ -98,11 +109,13 @@ console.log(arra[5]  + " g g   " + lineStart+1);
       for (i in numbOfData)
       {
         for (o in numbOfData[i]){
-        console.log( numbOfData[i][o]);
+        console.log( numbOfData[i][o]); // how access the data from array
     }
       }
+      //sendArrayOut(numbOfData)
+return  numbOfData; /// returns whole array data
   }
-  static getNameData (lineStart, arra)
+  static getNameData (lineStart, arra) //  same shit but with names
   {
     var n = '';
     var stringsa = [];
@@ -117,25 +130,26 @@ console.log(arra[5]  + " g g   " + lineStart+1);
             {
               if (arra[lineStart].substring(f , f+1) !== ',')
                 {  //console.log( "   " +  arra[lineStart].substring(f , f+1));2
-                  n += arra[lineStart].substring(f, f+1);}
+                  n += arra[lineStart].substring(f, f+1); /// adding names to the array
+                }
               }
       stringsa.push(n);
     f = goTo;
             }
 return stringsa;
   }
-  static findCommas(lokn)
+  static findCommas(lokn) // finds  commas in the string
   {
     var coms = [];
     for (var f = 0; f < lokn.length - 1; f++)
     {
-      if (lokn.substring(f , f+1) == ',')
+      if (lokn.substring(f , f+1) == ',') // finds commas
         {
-          coms.push(f)
+          coms.push(f) // ADDS POSITION TO array
         }
 
       }
-      coms.push(lokn.length - 1);
+      coms.push(lokn.length - 1); ///AND LAST POS
       return coms;
 
   }
