@@ -1,3 +1,4 @@
+var Chart = require('chart.js');
 var app = require('electron').remote;
 var dialog = app.dialog;
 var fs = require('fs');
@@ -14,8 +15,52 @@ document.getElementById('openButton').onclick = () =>{ /// finds when open butto
       for(i in array) {
         //  console.log(array[i]);
       }
-
+      console.log(" ");
         var  cj = new dataInTake(array); //  creates data  that is cut into ammounts of data
+        var hs = cj.sendArray();
+        var ctx = document.getElementById('myChart').getContext('2d');
+        ctx.canvas.width = 1;
+        ctx.canvas.height = 1;
+        var lineGraphHumd = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: hs[0],
+        datasets: [
+          {
+            label: "Humidity",
+            //backgroundColor: 'rgb(25, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: hs[1],
+        },
+
+        {
+            label: "Temperature in Celcius",
+          //  backgroundColor: 'rgb(25, 9, 132)',
+            borderColor: 'rgb(255, 99, 12)',
+            data: hs[2],
+        },
+
+        {
+            label: "Heat Index",
+            //backgroundColor: 'rgb(5, 99, 12)',
+            borderColor: 'rgb(55, 99, 2)',
+            data: hs[3],
+        }
+      ]
+    },
+
+   options: {
+      title: {
+        display: true,
+        text: 'Humidity Chart'
+      }
+  }
+});
+
+
 
       //chopAndSort(array);
       //readFiled(fileNames[0]);
@@ -51,13 +96,16 @@ class dataInTake // data struct
 
   constructor(array) // constuctor calls shit
   {
-    dataInTake.chopAndSor(array); // chops data
+    this.data = dataInTake.chopAndSor(array); // chops data
 
   }
-  sendArrayOut(arra)
+  sendArrayOut()
   {
 
-    return arra
+    return this.NameData
+  }
+  sendArray() {
+    return this.data
   }
 
 
@@ -75,7 +123,7 @@ class dataInTake // data struct
         this.nameData = dataInTake.getNameData (lineStart, arra); // get the name array to access the name array
         // use var dataInTakevar = dataInTake(array );
         //dataInTakevar.nameData  this is and array access
-      var  data =  dataInTake.getData (lineStart, arra); // gets finnish cut up arrays
+      var data =  dataInTake.getData (lineStart, arra); // gets finnish cut up arrays
       return data; // sends final array of cut data
   }
   static getData (lineStart, arra)  // getss data
@@ -109,7 +157,7 @@ class dataInTake // data struct
       for (i in numbOfData)
       {
         for (o in numbOfData[i]){
-        console.log( numbOfData[i][o]); // how access the data from array
+        //console.log( numbOfData[i][o]); // how access the data from array
     }
       }
       //sendArrayOut(numbOfData)
