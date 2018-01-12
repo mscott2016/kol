@@ -17,6 +17,8 @@ document.getElementById('openButton').onclick = () =>{ /// finds when open butto
       }
       console.log(" ");
         var  cj = new dataInTake(array); //  creates data  that is cut into ammounts of data
+var getNamesArray = cj.sendArrayOut();
+
         var hs = cj.sendArray();
         var ctx = document.getElementById('myChart').getContext('2d');
         ctx.canvas.width = 1;
@@ -61,6 +63,61 @@ document.getElementById('openButton').onclick = () =>{ /// finds when open butto
 });
 
 
+//////////////////
+
+var  table = '';
+var getNamesArray = cj.sendArrayOut();
+ for (var k = 0; k < getNamesArray.length; k++)
+{  console.log(" ");
+//  var newRow = table.insertRow(table.length),
+
+  table +=  "<tr>";
+table +=  "<td>"+ getNamesArray[k] + "</td>";
+  for (var o = 0 ; o < hs[k].length ; o++)
+  {
+      table +=  "<td>"+ hs[k][o] +  "</td>";
+  }
+
+     table += "</tr>";
+}
+//console.log(" nfn" + table);
+//
+document.getElementById('tablearea').innerHTML = ("  <br> <table  border = 1 style= 'position:absolute; top:650px; left:0px; width:200px; height:38px;'>" + table + "</table>");
+
+
+/////////////
+
+var dataToTable = function (datasets) {
+    var html = '<table>';
+    html += '<thead><tr><th style="width:120px;">#</th>';
+
+    var columnCount = 0;
+    jQuery.each(dataset.datasets, function (idx, item) {
+        html += '<th style="background-color:' + item.fillColor + ';">' + item.label + '</th>';
+        columnCount += 1;
+    });
+
+    html += '</tr></thead>';
+
+    jQuery.each(dataset.labels, function (idx, item) {
+        html += '<tr><td>' + item + '</td>';
+        for (i = 0; i < columnCount; i++) {
+            html += '<td style="background-color:' + dataset.datasets[i].fillColor + ';">' + (dataset.datasets[i].data[idx] === '0' ? '-' : dataset.datasets[i].data[idx]) + '</td>';
+        }
+        html += '</tr>';
+    });
+
+    html += '</tr><tbody></table>';
+
+    return html;
+};
+
+
+//jQuery('#wrapper').html(dataToTable(data));
+
+//jQuery('#wrapper').html(dataToTable(lineGraphHumd));
+
+////////////////////////////////////
 
       //chopAndSort(array);
       //readFiled(fileNames[0]);
@@ -96,22 +153,23 @@ class dataInTake // data struct
 
   constructor(array) // constuctor calls shit
   {
-    this.data = dataInTake.chopAndSor(array); // chops data
+    this.kndn = dataInTake.chopAndSor(array); // chops data
 
   }
   sendArrayOut()
   {
 
-    return this.NameData
+    return this.kndn[0];
   }
   sendArray() {
-    return this.data
+    return this.kndn[1];
   }
 
 
     static chopAndSor(arra)// takes data trying to find start of data
   {
     var lineStart = 0;
+    var numbOfData = [];
         for(i in arra) { // runns through the lines
         if (dataInTake.findTime(arra[i])) // finding time for the  starting point
         {
@@ -124,8 +182,11 @@ class dataInTake // data struct
         // use var dataInTakevar = dataInTake(array );
         //dataInTakevar.nameData  this is and array access
       var data =  dataInTake.getData (lineStart, arra); // gets finnish cut up arrays
-      return data; // sends final array of cut data
+numbOfData.push(dataInTake.getNameData (lineStart, arra));
+numbOfData.push(data);
+      return numbOfData; // sends final array of cut data
   }
+
   static getData (lineStart, arra)  // getss data
   {
     var stringsa = [];
@@ -184,6 +245,7 @@ return  numbOfData; /// returns whole array data
       stringsa.push(n);
     f = goTo;
             }
+
 return stringsa;
   }
   static findCommas(lokn) // finds  commas in the string
